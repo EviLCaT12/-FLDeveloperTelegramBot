@@ -1,5 +1,5 @@
 
-namespace Logic.Models
+namespace domain.Models
 {
     public class InfrastructureObject //TODO может стоит enum
     {

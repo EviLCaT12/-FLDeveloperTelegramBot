@@ -1,12 +1,12 @@
-using Logic.Models;
+using domain.Models;
 
-namespace Logic.Inrefaces
+namespace domain.Logic.Inrefaces
 {
-    public interface IFlatRepository : IRepository<Flat>
+    public interface IFlatRepository //: IRepository<Flat> после mvp доработать
     {
-        IEnumerable<Flat> GetFlatByPrice (int price);
-        IEnumerable<Flat> GetFlatByArea (double area);
-        IEnumerable<Flat> GetFlatForYoungFamile();
-        IEnumerable<Flat> GetFlatByWorldeSide(WorldSide worldSide);
+        IEnumerable<Flat> GetFlatsByPrice (int price);
+        IEnumerable<Flat> GetFlatsByArea (double area);
+        IEnumerable<Flat> GetFlatsForYoungFamile();
+        IEnumerable<Flat> GetFlatsByWorldeSide(WorldSide worldSide);
     }
 }

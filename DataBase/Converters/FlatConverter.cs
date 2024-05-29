@@ -1,5 +1,5 @@
 using DataBase.Models;
-using Logic.Models;
+using domain.Models;
 
 namespace DataBase.Converters;
 

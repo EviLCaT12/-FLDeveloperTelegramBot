@@ -6,7 +6,7 @@ public class ApplicationContext
 {
     private readonly string connectionString;
     private readonly NpgsqlDataSource dataSource;
-    private readonly NpgsqlConnection connection;
+    public NpgsqlConnection connection;
 
     public ApplicationContext(string connectionString)
     {

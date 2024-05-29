@@ -1,4 +1,4 @@
-namespace Logic.Models
+namespace domain.Models
 {
     public class ResidentialComplex
     {

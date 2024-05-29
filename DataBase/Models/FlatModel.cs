@@ -1,6 +1,4 @@
 
-using Logic.Models;
-
 namespace DataBase.Models
 {
     public class FlatModel

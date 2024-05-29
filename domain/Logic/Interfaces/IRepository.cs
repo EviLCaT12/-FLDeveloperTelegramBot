@@ -1,6 +1,6 @@
+using domain.Models;
 
-
-namespace Logic.Inrefaces
+namespace domain.Logic.Inrefaces
 {
     public interface IRepository<T> where T : class
     {
