@@ -5,10 +5,10 @@ using domain.Models;
 namespace DataBase.Repository;
 public class FlatRepository : IFlatRepository
 {
-    public ApplicationContext _context;
-    public FlatRepository(ApplicationContext context)
+    private ApplicationContext _context;
+    public FlatRepository()
     {
-        _context = context;
+        _context = new ApplicationContext("Host=localhost;Username=postgres;Password=qwerty123;Database=feip_task");
     }
 
     public IEnumerable<Flat> GetFlatsByArea(double area)
