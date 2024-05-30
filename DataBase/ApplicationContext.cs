@@ -4,13 +4,12 @@ namespace DataBase;
 
 public class ApplicationContext
 {
-    private readonly string connectionString;
+
     private readonly NpgsqlDataSource dataSource;
     public NpgsqlConnection connection;
 
     public ApplicationContext(string connectionString)
     {
-        this.connectionString = connectionString;
         dataSource = NpgsqlDataSource.Create(connectionString);
         connection = dataSource.OpenConnection();
         Console.WriteLine("Im working!!!");
