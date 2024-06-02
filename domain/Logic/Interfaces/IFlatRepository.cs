@@ -4,9 +4,8 @@ namespace domain.Logic.Inrefaces
 {
     public interface IFlatRepository //: IRepository<Flat> после mvp доработать
     {
-        IEnumerable<Flat> GetFlatsByPrice (int price);
-        IEnumerable<Flat> GetFlatsByArea (double area);
+        Task<IEnumerable<Flat>> GetFlatsByPriceAndArea(int lowPrice, int highPrice, double lowArea, double highArea);
         IEnumerable<Flat> GetFlatsForYoungFamile();
-        IEnumerable<Flat> GetFlatsByWorldeSide(WorldSide worldSide);
+        IEnumerable<Flat> GetFlatsByWindowWorldeSide(WorldSide worldSide);
     }
 }
