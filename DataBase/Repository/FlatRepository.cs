@@ -44,15 +44,16 @@ public class FlatRepository : IFlatRepository
         return flats;
     }
 
-    public IEnumerable<Flat> GetFlatsByWindowWorldeSide(WorldSide worldSide)
+    public async Task<IEnumerable<Flat>> GetFlatsByWindowWorldeSide(WorldSide worldSide)
     {
-        var stringCommand = string.Format("SELECT id FROM flats WHERE world_side = {0} ", (int)worldSide);
+        var stringCommand = "SELECT * FROM flats WHERE windows_world_side = @worldSIde";
         using var command = new NpgsqlCommand(stringCommand, _context.connection);
+        command.Parameters.AddWithValue("worldSide", worldSide);
         using var reader =  command.ExecuteReader();
         List<Flat> flats = new List<Flat>();
         if (reader.HasRows)
         {
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var newFlat = new Flat() {
                     Id = reader.GetInt32(0),
@@ -73,8 +74,21 @@ public class FlatRepository : IFlatRepository
         return flats;
     }
 
-    public IEnumerable<Flat> GetFlatsForYoungFamile()
+    public async Task<IEnumerable<Flat>> GetFlatsForYoungFamile(List<InfrastructureObject> infObjects)
     {
-        throw new NotImplementedException();
+        string stringCommand = "SELECT *" +
+                                "FROM (" +
+                                    "SELECT rcio.resedential_complex_id, rcio.infrastructure_object_id" +
+                                    "FROM resedential_complexes_infrastructure_objects as rcio" +
+                                    "INNER JOIN infrastructure_objects as io" +
+                                    "ON rcio.infrastructure_object_id = io.id" +
+                                    "WHERE io.name IN ('Sport', 'Medecine', 'Education')" +
+                                ") as result" +
+                                "INNER JOIN flats" +
+                                "ON flats.resedential_complex_id = result.resedential_complex_id";
+        foreach (var infObject in infObjects)
+        {
+            
+        }
     }
 }
