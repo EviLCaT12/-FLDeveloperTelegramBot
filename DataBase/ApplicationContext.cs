@@ -12,6 +12,6 @@ public class ApplicationContext
     {
         dataSource = NpgsqlDataSource.Create(connectionString);
         connection = dataSource.OpenConnection();
-        Console.WriteLine("Im working!!!");
+        Console.WriteLine("DataBase connect was good");
     }
 }

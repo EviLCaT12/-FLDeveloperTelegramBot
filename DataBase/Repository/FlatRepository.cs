@@ -8,10 +8,10 @@ public class FlatRepository : IFlatRepository
     private ApplicationContext _context;
     public FlatRepository()
     {
-        _context = new ApplicationContext("Host=localhost;Username=postgres;Password=qwerty123;Database=feip_task");
+        _context = new ApplicationContext("Host=localhost;Username=postgres;Password=qwerty123;Database=tg_bot");
     }
 
-    public async Task<IEnumerable<Flat>> GetFlatsByPriceAndArea(int lowPrice, int highPrice, double lowArea, double highArea)
+    public List<Flat> GetFlatsByPriceAndArea(int lowPrice, int highPrice, double lowArea, double highArea)
     {
         var stringCommand = "SELECT * FROM flats WHERE price BETWEEN @lowPrice AND @highPrice AND area BETWEEN @lowArea AND @highArea";
         using var command = new NpgsqlCommand(stringCommand, _context.connection);
@@ -19,11 +19,11 @@ public class FlatRepository : IFlatRepository
         command.Parameters.AddWithValue("highPrice", highPrice);
         command.Parameters.AddWithValue("lowArea", lowArea);
         command.Parameters.AddWithValue("highArea", highArea);
-        await using var reader = await command.ExecuteReaderAsync();
+        using var reader = command.ExecuteReader();
         List<Flat> flats = new List<Flat>();
         if (reader.HasRows)
         {
-            while (await reader.ReadAsync())
+            while (reader.Read())
             {
                 var newFlat = new Flat() {
                     Id = reader.GetInt32(0),

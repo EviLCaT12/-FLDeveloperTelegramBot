@@ -13,6 +13,9 @@ namespace domain.Models
         public BuildingStatus Status { get; set; }
         public bool IsMortgageAvailable { get; set; }
         public bool IsSold { get; set; }
+
+
+        
     }
     
     public enum WorldSide
