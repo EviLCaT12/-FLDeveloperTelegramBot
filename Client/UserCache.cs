@@ -6,16 +6,22 @@ public class UserCache : ITelegramCache
     /// Идентификатор
     /// </summary>
     public long Id { get; set; }
-    
+
     /// <summary>
     /// Временные данные
     /// </summary>
-    public string Data { get; set; }
+    public int LowPrice { get; set; }
+    public int HighPrice { get; set; }
+    public double LowArea { get; set; }
+    public double HighArea { get; set; }
  
     public bool ClearData()
     {
         Id = 0;
-        Data = "";
+        LowPrice = 0;
+        HighPrice = 0;
+        LowArea = 0;
+        HighArea = 0;
         return true;
     }
 }
