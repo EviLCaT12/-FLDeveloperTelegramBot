@@ -16,4 +16,11 @@ public class FlatService
         var flats =  _db.GetFlatsByPriceAndArea(lowPrice, highPrice, lowArea, highArea);
         return Result.Ok(flats);
     }
+
+    public Result<List<Flat>> GetFlatsByWindowsSide(WorldSide worldSide)
+    {
+        var mapWorldSide = Convert.ToInt32(worldSide);
+        var flats = _db.GetFlatsByWindowWorldeSide(mapWorldSide);
+        return Result.Ok(flats); 
+    }
 }

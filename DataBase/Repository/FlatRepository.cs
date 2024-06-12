@@ -44,16 +44,16 @@ public class FlatRepository : IFlatRepository
         return flats;
     }
 
-    public async Task<IEnumerable<Flat>> GetFlatsByWindowWorldeSide(WorldSide worldSide)
+    public List<Flat> GetFlatsByWindowWorldeSide(int worldSide)
     {
         var stringCommand = "SELECT * FROM flats WHERE windows_world_side = @worldSIde";
         using var command = new NpgsqlCommand(stringCommand, _context.connection);
         command.Parameters.AddWithValue("worldSide", worldSide);
-        await using var reader = await command.ExecuteReaderAsync();
+        using var reader =  command.ExecuteReader();
         List<Flat> flats = new List<Flat>();
         if (reader.HasRows)
         {
-            while (await reader.ReadAsync())
+            while (reader.Read())
             {
                 var newFlat = new Flat() {
                     Id = reader.GetInt32(0),
