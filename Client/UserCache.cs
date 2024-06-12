@@ -16,6 +16,7 @@ public class UserCache : ITelegramCache
     public double LowArea { get; set; }
     public double HighArea { get; set; }
     public WorldSide WorldSide{ get; set; }
+    public List<InfrastructureObject> InfObjects { get; set; }
     public bool ClearData()
     {
         Id = 0;

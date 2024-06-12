@@ -34,8 +34,7 @@ public class Commands
         {
             MenuReplyKeyboardMarkup = menu
         };
-
-        var sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
+       await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
 
     }
     #endregion
@@ -134,7 +133,7 @@ public class Commands
             }
             default:
             {
-                    PRTelegramBot.Helpers.Message.Send(botClient, update, "Вы ничего не выбрали или значение не корректно");
+                    await PRTelegramBot.Helpers.Message.Send(botClient, update, "Вы ничего не выбрали или значение не корректно");
                     break;
             }
         }
@@ -148,4 +147,42 @@ public class Commands
         }
     }
     #endregion
+
+    #region
+    [SlashHandler("/get_flats_for_young_family")]
+    public static async Task StartCommandForYoungFamily(ITelegramBotClient botClient, Update update)
+    {
+        List<InfrastructureObject> infObjects = flatService.GetAllInfrastructureObjects().Value;
+        string msg = "Выберете объекты (укажите номера без пробелов и разделительных символов), которые должны располагаться рядом с вашей квартирой: ";
+        var counter = 1;
+        foreach (var infObject in infObjects)
+        {
+            msg += Convert.ToString(counter) + " " + infObject.Name;
+        }
+        update.RegisterStepHandler(new StepTelegram(GetFlatsForYoungFamily, new UserCache()));
+        var handler = update.GetCacheData<UserCache>().InfObjects = infObjects;
+        await PRTelegramBot.Helpers.Message.Send(botClient, update, msg);
+    }
+
+    public static async Task GetFlatsForYoungFamily(ITelegramBotClient botClient, Update update)
+    {
+        var infObjNumber = update.Message.Text;
+        var needList = new List<InfrastructureObject>();
+        var handler = update.GetStepHandler<StepTelegram>();
+        var allInfObj = handler.GetCache<UserCache>().InfObjects;
+        foreach (var s in infObjNumber)
+        {
+            needList.Add(allInfObj[Convert.ToInt32(s)]); 
+        }
+        var flats = flatService.GetFlatsForYoungFamily(needList);
+        foreach (var flat in flats.Value)
+        {
+            string msg = $"id квартиры с подходящими условиями {flat.Id}";
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, msg);
+        }
+        update.ClearStepUserHandler();
+    }
+    #endregion
+
+    
 }
