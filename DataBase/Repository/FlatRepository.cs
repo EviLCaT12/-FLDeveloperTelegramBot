@@ -25,7 +25,8 @@ public class FlatRepository : IFlatRepository
         {
             while (reader.Read())
             {
-                var newFlat = new Flat() {
+                var newFlat = new Flat()
+                 {
                     Id = reader.GetInt32(0),
                     ResidentialComplexId = reader.GetInt32(1),
                     Price = reader.GetInt32(2),
@@ -74,32 +75,33 @@ public class FlatRepository : IFlatRepository
         return flats;
     }
 
-    public async Task<IEnumerable<Flat>> GetFlatsForYoungFamile(List<InfrastructureObject> infObjects)
+    public List<Flat> GetFlatsForYoungFamily(List<InfrastructureObject> infObjects)
     {
         string objectList = "";
         foreach (var infObj in infObjects)
         {
             objectList += "'" + infObj.Name + "',";
         }
-        objectList.Remove(objectList.Length - 1);
+        objectList = objectList.Remove(objectList.Length - 1);
 
-        string stringCommand = "SELECT *" +
-                                "FROM (" +
-                                    "SELECT rcio.resedential_complex_id, rcio.infrastructure_object_id" +
-                                    "FROM resedential_complexes_infrastructure_objects as rcio" +
-                                    "INNER JOIN infrastructure_objects as io" +
-                                    "ON rcio.infrastructure_object_id = io.id" +
-                                    "WHERE io.name IN (" + objectList + ") +) as result" +
-                                "INNER JOIN flats" +
-                                "ON flats.resedential_complex_id = result.resedential_complex_id";
+        string stringCommand = "SELECT DISTINCT flats.* " + 
+                                "FROM ( " +  
+                                    "SELECT rcio.resedential_complex_id, rcio.infrastructure_object_id " + 
+                                    "FROM resedential_complexes_infrastructure_objects as rcio " +
+                                    "INNER JOIN infrastructure_objects as io " +
+                                    "ON rcio.infrastructure_object_id = io.id " +
+                                    "WHERE io.name IN (" + objectList + ")) as result " +
+                                "INNER JOIN flats " +
+                                "ON flats.resedential_complex_id = result.resedential_complex_id ORDER BY flats.id";
         using var command = new NpgsqlCommand(stringCommand, _context.connection);
-        await using var reader = await command.ExecuteReaderAsync();
+        using var reader = command.ExecuteReader();
         List<Flat> flats = new List<Flat>();
         if (reader.HasRows)
         {
-            while (await reader.ReadAsync())
+            while (reader.Read())
             {
-                var newFlat = new Flat() {
+                var newFlat = new Flat() 
+                {
                     Id = reader.GetInt32(0),
                     ResidentialComplexId = reader.GetInt32(1),
                     Price = reader.GetInt32(2),
@@ -116,5 +118,27 @@ public class FlatRepository : IFlatRepository
             return flats;
         }
         return flats;
+    }
+
+    public List<InfrastructureObject> GetAllUniqueInfObjects()
+    {
+        var stringCommand = "SELECT * FROM infrastructure_objects";
+        using var command = new NpgsqlCommand(stringCommand, _context.connection);
+        using var reader = command.ExecuteReader();
+        List<InfrastructureObject> infObjects = new List<InfrastructureObject>();
+        if (reader.HasRows)
+        {
+            while (reader.Read())
+            {
+                var infObj = new InfrastructureObject()
+                {
+                    Id = reader.GetInt32(0),
+                    Name = reader.GetString(1)
+                };
+                infObjects.Add(infObj);
+            }
+            return infObjects;
+        }
+        return infObjects;
     }
 }

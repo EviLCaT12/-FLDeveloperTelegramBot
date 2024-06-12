@@ -23,4 +23,17 @@ public class FlatService
         var flats = _db.GetFlatsByWindowWorldeSide(mapWorldSide);
         return Result.Ok(flats); 
     }
+
+    public Result<List<Flat>> GetFlatsForYoungFamily(List<InfrastructureObject> objects)
+    {
+        var flats = _db.GetFlatsForYoungFamily(objects);
+        return Result.Ok(flats);
+        
+    }
+    
+    public Result<List<InfrastructureObject>> GetAllInfrastructureObjects() 
+    {
+        var infObjects = _db.GetAllUniqueInfObjects();
+        return Result.Ok(infObjects);
+    }
 }

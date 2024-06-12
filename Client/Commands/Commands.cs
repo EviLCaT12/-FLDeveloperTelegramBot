@@ -92,11 +92,11 @@ public class Commands
     [SlashHandler("/get_flat_by_window_world_side")]
     public static async Task StartStepWindowsWorldSide(ITelegramBotClient botClient, Update update)
     {
-        string msg = "Выберете сторону света, на которую должны выходить окна, из следующего списка:" +
-                    "1. Север " +
-                    "2. Юг" +
-                    "3. Запад" +
-                    "4. Восток" +
+        string msg = "Выберете сторону света, на которую должны выходить окна, из следующего списка:" + '\n' +
+                    "1. Север " + '\n' +
+                    "2. Юг" + '\n' +
+                    "3. Запад" + '\n' +
+                    "4. Восток" + '\n' +
                     "Напишите слово или число";
         update.RegisterStepHandler(new StepTelegram(GetFLatByWindowsWorldSide, new UserCache()));
         await PRTelegramBot.Helpers.Message.Send(botClient, update, msg);
@@ -152,15 +152,17 @@ public class Commands
     [SlashHandler("/get_flats_for_young_family")]
     public static async Task StartCommandForYoungFamily(ITelegramBotClient botClient, Update update)
     {
+        update.RegisterStepHandler(new StepTelegram(GetFlatsForYoungFamily, new UserCache()));
         List<InfrastructureObject> infObjects = flatService.GetAllInfrastructureObjects().Value;
-        string msg = "Выберете объекты (укажите номера без пробелов и разделительных символов), которые должны располагаться рядом с вашей квартирой: ";
+        var handler = update.GetStepHandler<StepTelegram>();
+        handler!.GetCache<UserCache>().InfObjects = infObjects;
+        string msg = "Выберете объекты (укажите номера без пробелов и разделительных символов), которые должны располагаться рядом с вашей квартирой: \n";
         var counter = 1;
         foreach (var infObject in infObjects)
         {
-            msg += Convert.ToString(counter) + " " + infObject.Name;
+            msg += Convert.ToString(counter) + " " + infObject.Name + '\n';
+            counter++;
         }
-        update.RegisterStepHandler(new StepTelegram(GetFlatsForYoungFamily, new UserCache()));
-        var handler = update.GetCacheData<UserCache>().InfObjects = infObjects;
         await PRTelegramBot.Helpers.Message.Send(botClient, update, msg);
     }
 
@@ -172,7 +174,8 @@ public class Commands
         var allInfObj = handler.GetCache<UserCache>().InfObjects;
         foreach (var s in infObjNumber)
         {
-            needList.Add(allInfObj[Convert.ToInt32(s)]); 
+            var index = int.Parse(s.ToString());
+            needList.Add(allInfObj[index]);
         }
         var flats = flatService.GetFlatsForYoungFamily(needList);
         foreach (var flat in flats.Value)
