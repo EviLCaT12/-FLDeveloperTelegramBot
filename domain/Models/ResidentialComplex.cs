@@ -1,3 +1,5 @@
+using domain.Logic;
+
 namespace domain.Models
 {
     public class ResidentialComplex
@@ -11,6 +13,21 @@ namespace domain.Models
         public bool HaveParkingPlace { get; set; }
         public bool IsFinished { get; set; }
         public bool HaveLoyalMortgage { get; set; }
+
+
+        public Result IsValid()
+        {
+            if (Id <= 0)
+                return Result.Fail("Invalid id");
+
+            if (string.IsNullOrEmpty(Name))
+                return Result.Fail("Invalid name");
+
+            if (string.IsNullOrEmpty(Adress))
+                return Result.Fail("Invalid adres");
+
+            return Result.Ok();
+        }
     }
 
 }
