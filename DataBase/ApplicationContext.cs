@@ -4,7 +4,6 @@ namespace DataBase;
 
 public class ApplicationContext
 {
-
     private readonly NpgsqlDataSource dataSource;
     public NpgsqlConnection connection;
 

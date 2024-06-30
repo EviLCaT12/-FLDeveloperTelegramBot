@@ -1,24 +1,25 @@
 using DataBase.Models;
 using domain.Models;
+using Npgsql;
 
 namespace DataBase.Converters;
 
 public static class FlatConverter
 {
-    public static Flat ToDomain(this FlatModel model)
+    public static Flat ToDomain(NpgsqlDataReader reader)
     {
-        return new Flat
+        return new Flat()
         {
-            Id = model.Id,
-            ResidentialComplexId = model.ResidentialComplexId,
-            Price = model.Price,
-            Area = model.Area,
-            RoomQuantity = model.RoomQuantity,
-            FloorNumber = model.FloorNumber,
-            WorldSide = (WorldSide)model.WorldSide,
-            Status = (BuildingStatus)model.Status,
-            IsMortgageAvailable = model.IsMortgageAvailable,
-            IsSold = model.IsSold
+            Id = reader.GetInt32(0),
+            ResidentialComplexId = reader.GetInt32(1),
+            Price = reader.GetInt32(2),
+            Area = reader.GetDouble(3),
+            RoomQuantity = reader.GetInt32(4),
+            FloorNumber = reader.GetInt32(5),
+            WorldSide = (WorldSide)reader.GetInt32(6),
+            Status = (BuildingStatus)reader.GetInt32(7),
+            IsMortgageAvailable = reader.GetBoolean(8),
+            IsSold = reader.GetBoolean(9)
         };
     }
 
